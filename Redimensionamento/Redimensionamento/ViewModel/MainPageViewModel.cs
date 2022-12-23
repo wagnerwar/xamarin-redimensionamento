@@ -80,7 +80,7 @@ namespace Redimensionamento.ViewModel
             try
             {
                 IsLoading = true;
-                await Task.Delay(TimeSpan.FromSeconds(3));                
+                await Task.Delay(TimeSpan.FromSeconds(1));                
                 if (String.IsNullOrEmpty(Resolucao))
                 {
                     throw new Exception("Resolução deve ser selecionada");
@@ -167,6 +167,8 @@ namespace Redimensionamento.ViewModel
         {
             try
             {
+                IsLoading = true;
+                await Task.Delay(TimeSpan.FromSeconds(1));
                 String caminho = GetCaminhoPasta();
                 if (Directory.Exists(caminho))
                 {
@@ -176,6 +178,7 @@ namespace Redimensionamento.ViewModel
                         fi.Delete();
                     }
                 }
+                IsLoading = false;
                 MessagingCenter.Send<MainPage, String>(new MainPage(), "Sucesso", "Pasta limpa com sucesso");
             }
             catch(Exception ex)
@@ -208,8 +211,7 @@ namespace Redimensionamento.ViewModel
         }
         public String GetCaminhoPasta()
         {
-            String basePath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-            basePath = DependencyService.Get<IPathService>().Pictures;
+            String basePath = DependencyService.Get<IPathService>().Pictures;
             String caminho = Path.Combine(basePath, Pasta);
             return caminho;
         }

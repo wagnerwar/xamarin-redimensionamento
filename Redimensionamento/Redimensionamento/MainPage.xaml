@@ -17,21 +17,28 @@
                     RadioButtonGroup.GroupName="{Binding GroupName}" 
                     RadioButtonGroup.SelectedValue="{Binding Resolucao}">
                     <Label Text="Qual é a resolução?" />
-                    <RadioButton Content="640x360" 
-                        Value="640x360" />
-                    <RadioButton Content="960x540"                       
-                        Value="960x540"/>
+                    <RadioButton Content="1080x1080" 
+                        Value="1080x1080" />
+                    <RadioButton Content="1200x566"                       
+                        Value="1200x566"/>
+                    <RadioButton Content="100x100"                       
+                        Value="100x100"/>
                 </StackLayout>
-                <ImageButton 
-                HorizontalOptions="FillAndExpand" 
+
+                <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand">
+                    <ImageButton 
+                HorizontalOptions="StartAndExpand" 
                 Source="icone_upload.png" 
                 BackgroundColor="Transparent" 
                 Command="{Binding EnviarArquivoCommand}"></ImageButton>
-                <ImageButton 
-                HorizontalOptions="FillAndExpand" 
+                    <ImageButton 
+                HorizontalOptions="StartAndExpand" 
                 Source="icone_delete.png" 
                 BackgroundColor="Transparent" 
                 Command="{Binding LimparDiretorioCommand}"></ImageButton>
+                </StackLayout>
+                
+                
                 <ActivityIndicator Color="Black" 
                            VerticalOptions="Center" 
                            HorizontalOptions="Center" 
