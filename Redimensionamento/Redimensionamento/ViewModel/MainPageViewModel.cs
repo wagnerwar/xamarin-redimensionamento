@@ -7,6 +7,9 @@ using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using System.Threading;
+using System.Text.RegularExpressions;
+using Redimensionamento.Interface;
+
 namespace Redimensionamento.ViewModel
 {
     public class MainPageViewModel : BaseViewModel
@@ -75,13 +78,11 @@ namespace Redimensionamento.ViewModel
             try
             {
                 IsLoading = true;
-                await Task.Delay(TimeSpan.FromSeconds(3));
-                IsLoading = false;
+                await Task.Delay(TimeSpan.FromSeconds(3));                
                 if (String.IsNullOrEmpty(Resolucao))
                 {
                     throw new Exception("Resolução deve ser selecionada");
                 }
-                throw new Exception("Teste");
                 var photo = await MediaPicker.PickPhotoAsync();
                 await LoadPhotoAsync(photo);
             }
@@ -103,13 +104,43 @@ namespace Redimensionamento.ViewModel
                 // recuperar binário e salvar no banco
                 Arquivo = File.ReadAllBytes(photo.FullPath);
                 NomeArquivo = photo.FileName;
-                // Processamento
-                MessagingCenter.Send<MainPage, String>(new MainPage(), "Sucesso", "Arquivo enviado com sucesso");
+                String tipoConteudo = photo.ContentType;
+                String modeloTipo = @"^image.*$";
+                Match match = Regex.Match(tipoConteudo, modeloTipo);                
+                if (match.Success)
+                {
+                    ArquivoRedimensionado = Arquivo;
+                    // Redimensionamento
+                    // Envio do arquivo para uma pasta do aparelho
+                    await UploadArquivo();
+                    IsLoading = false;
+                    MessagingCenter.Send<MainPage, String>(new MainPage(), "Sucesso", "Arquivo enviado com sucesso");
+                }
+                else
+                {
+                    IsLoading = false;
+                    throw new Exception("Arquivo inválido");
+                }                
             }
             catch(Exception ex)
             {
+                IsLoading = false;
                 MessagingCenter.Send<MainPage, String>(new MainPage(), "Erro", ex.Message);
             }            
+        }
+        async Task UploadArquivo()
+        {
+            
+            String pasta = "redimensionados";
+            String basePath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            basePath = DependencyService.Get<IPathService>().Pictures;
+            String caminho = Path.Combine(basePath, pasta);
+            if (!Directory.Exists(caminho))
+            {
+                Directory.CreateDirectory(caminho);
+            }
+            String caminhoArquivo = Path.Combine(caminho, NomeArquivo);
+            File.WriteAllBytes(caminhoArquivo, ArquivoRedimensionado);
         }
     }
 }
