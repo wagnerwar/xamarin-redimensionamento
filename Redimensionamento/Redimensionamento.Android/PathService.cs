@@ -12,6 +12,9 @@ using Redimensionamento.Interface;
 using System.Runtime.CompilerServices;
 using System.IO;
 using Android.Graphics;
+using Android.Graphics.Drawables;
+using Android.Content.Res;
+
 [assembly: Xamarin.Forms.Dependency(typeof(Redimensionamento.Droid.PathService))]
 namespace Redimensionamento.Droid
 {
@@ -24,6 +27,7 @@ namespace Redimensionamento.Droid
                 return Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures).AbsolutePath;
             }
         }
+
 
         public byte[] ResizeImageAndroid(byte[] imageData, float width, float height)
         {

@@ -17,6 +17,7 @@ namespace Redimensionamento.ViewModel
         private INavigation _navigation { get; set; }
         public ICommand EnviarArquivoCommand { get; set; }
         public ICommand LimparDiretorioCommand { get; set; }
+        public ICommand PlotarLogoCommand { get; set; }
         private String _nomeArquivo;
         public String NomeArquivo
         {
