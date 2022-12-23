@@ -84,7 +84,9 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\icon.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\icone_delete.png" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Redimensionamento\Redimensionamento.csproj">
       <Project>{95870B27-4ADC-40DC-B7CB-E041074E4419}</Project>

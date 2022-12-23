@@ -9,13 +9,14 @@ using Xamarin.Forms;
 using System.Threading;
 using System.Text.RegularExpressions;
 using Redimensionamento.Interface;
-
 namespace Redimensionamento.ViewModel
 {
     public class MainPageViewModel : BaseViewModel
     {
+        private String Pasta = "redimensionados";
         private INavigation _navigation { get; set; }
         public ICommand EnviarArquivoCommand { get; set; }
+        public ICommand LimparDiretorioCommand { get; set; }
         private String _nomeArquivo;
         public String NomeArquivo
         {
@@ -70,6 +71,7 @@ namespace Redimensionamento.ViewModel
         {
             _navigation = navigation;
             EnviarArquivoCommand = new Command(async () => await EnviarArquivo());
+            LimparDiretorioCommand = new Command(async () => await LimparDiretorio());
             IsLoading = false;
             GroupName = "Grupo";
         }
@@ -110,7 +112,14 @@ namespace Redimensionamento.ViewModel
                 if (match.Success)
                 {
                     ArquivoRedimensionado = Arquivo;
+                    // Verifica duplicidade
+                    bool retorno = await VerificarExistenciaArquivo(NomeArquivo);
+                    if(retorno == false)
+                    {
+                        throw new Exception("Já existe arquivo com este nome na pasta");
+                    }
                     // Redimensionamento
+                    await RedimensionarArquivo();
                     // Envio do arquivo para uma pasta do aparelho
                     await UploadArquivo();
                     IsLoading = false;
@@ -129,18 +138,80 @@ namespace Redimensionamento.ViewModel
             }            
         }
         async Task UploadArquivo()
-        {
-            
-            String pasta = "redimensionados";
-            String basePath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-            basePath = DependencyService.Get<IPathService>().Pictures;
-            String caminho = Path.Combine(basePath, pasta);
+        {            
+            String caminho = GetCaminhoPasta();
             if (!Directory.Exists(caminho))
             {
                 Directory.CreateDirectory(caminho);
             }
             String caminhoArquivo = Path.Combine(caminho, NomeArquivo);
             File.WriteAllBytes(caminhoArquivo, ArquivoRedimensionado);
+        }
+        async Task RedimensionarArquivo()
+        {
+            try
+            {
+                String[] valoresResolucao = Resolucao.Split('x');
+                int largura = Convert.ToInt32(valoresResolucao[0]);
+                int altura = Convert.ToInt32(valoresResolucao[1]);
+                var service = DependencyService.Get<IPathService>();
+                byte[] redimensionado = service.ResizeImageAndroid(Arquivo, largura, altura);
+                ArquivoRedimensionado = redimensionado;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+        async Task LimparDiretorio()
+        {
+            try
+            {
+                String caminho = GetCaminhoPasta();
+                if (Directory.Exists(caminho))
+                {
+                    DirectoryInfo dir = new DirectoryInfo(caminho);
+                    foreach (FileInfo fi in dir.GetFiles())
+                    {
+                        fi.Delete();
+                    }
+                }
+                MessagingCenter.Send<MainPage, String>(new MainPage(), "Sucesso", "Pasta limpa com sucesso");
+            }
+            catch(Exception ex)
+            {
+                MessagingCenter.Send<MainPage, String>(new MainPage(), "Erro", ex.Message);
+            }            
+        }
+        async Task<bool> VerificarExistenciaArquivo(String nome)
+        {
+            try
+            {
+                String caminho = GetCaminhoPasta();
+                if (Directory.Exists(caminho))
+                {
+                    DirectoryInfo dir = new DirectoryInfo(caminho);
+                    foreach (FileInfo fi in dir.GetFiles())
+                    {
+                        if (fi.Name.Equals(nome))
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public String GetCaminhoPasta()
+        {
+            String basePath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            basePath = DependencyService.Get<IPathService>().Pictures;
+            String caminho = Path.Combine(basePath, Pasta);
+            return caminho;
         }
     }
 }

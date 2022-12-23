@@ -27,6 +27,11 @@
                 Source="icone_upload.png" 
                 BackgroundColor="Transparent" 
                 Command="{Binding EnviarArquivoCommand}"></ImageButton>
+                <ImageButton 
+                HorizontalOptions="FillAndExpand" 
+                Source="icone_delete.png" 
+                BackgroundColor="Transparent" 
+                Command="{Binding LimparDiretorioCommand}"></ImageButton>
                 <ActivityIndicator Color="Black" 
                            VerticalOptions="Center" 
                            HorizontalOptions="Center" 

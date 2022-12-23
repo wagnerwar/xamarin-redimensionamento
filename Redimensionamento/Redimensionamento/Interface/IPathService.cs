@@ -7,5 +7,6 @@ namespace Redimensionamento.Interface
     public interface IPathService
     {
         string Pictures { get; }
+        byte[] ResizeImageAndroid(byte[] imageData, float width, float height);
     }
 }
