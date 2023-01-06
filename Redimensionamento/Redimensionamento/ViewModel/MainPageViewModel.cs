@@ -38,16 +38,7 @@ namespace Redimensionamento.ViewModel
                 OnPropertyChanged(nameof(GroupName));
             }
         }
-        private String _resolucao;
-        public String Resolucao
-        {
-            get { return _resolucao; }
-            set
-            {
-                _resolucao = value;
-                OnPropertyChanged();
-            }
-        }
+        
         private byte[] _arquivo;
         public byte[] Arquivo
         {
@@ -68,6 +59,48 @@ namespace Redimensionamento.ViewModel
                 OnPropertyChanged();
             }
         }
+        private int _largura;
+        public int Largura
+        {
+            get { return _largura; }
+            set
+            {
+                _largura = value;
+                OnPropertyChanged();
+            }
+        }
+        
+        private int _larguraMaxima;
+        public int LarguraMaxima
+        {
+            get { return _larguraMaxima; }
+            set
+            {
+                _larguraMaxima = value;
+                OnPropertyChanged();
+            }
+        }
+        
+        private int _alturaMaxima;
+        public int AlturaMaxima
+        {
+            get { return _alturaMaxima; }
+            set
+            {
+                _alturaMaxima = value;
+                OnPropertyChanged();
+            }
+        }
+        private int _altura;
+        public int Altura
+        {
+            get { return _altura; }
+            set
+            {
+                _altura = value;
+                OnPropertyChanged();
+            }
+        }
         public MainPageViewModel(INavigation navigation)
         {
             _navigation = navigation;
@@ -75,16 +108,24 @@ namespace Redimensionamento.ViewModel
             LimparDiretorioCommand = new Command(async () => await LimparDiretorio());
             IsLoading = false;
             GroupName = "Grupo";
+            LarguraMaxima = 500;
+            AlturaMaxima = 1000;
+            Largura = 200;
+            Altura = 500;
         }
         public async Task EnviarArquivo()
         {
             try
             {
                 IsLoading = true;
-                await Task.Delay(TimeSpan.FromSeconds(1));                
-                if (String.IsNullOrEmpty(Resolucao))
+                await Task.Delay(TimeSpan.FromSeconds(1)); 
+                if(Largura == 0)
                 {
-                    throw new Exception("Resolução deve ser selecionada");
+                    throw new Exception("Largura deve ser maior que 0");
+                }
+                if(Altura == 0)
+                {
+                    throw new Exception("Altura deve ser maior que 0");
                 }
                 var photo = await MediaPicker.PickPhotoAsync();
                 await LoadPhotoAsync(photo);
@@ -152,9 +193,8 @@ namespace Redimensionamento.ViewModel
         {
             try
             {
-                String[] valoresResolucao = Resolucao.Split('x');
-                int largura = Convert.ToInt32(valoresResolucao[0]);
-                int altura = Convert.ToInt32(valoresResolucao[1]);
+                int largura = Largura;
+                int altura = Altura;
                 var service = DependencyService.Get<IPathService>();
                 byte[] redimensionado = service.ResizeImageAndroid(Arquivo, largura, altura);
                 ArquivoRedimensionado = redimensionado;

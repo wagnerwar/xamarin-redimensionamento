@@ -11,6 +11,7 @@
                 HasShadow="True" 
                 Padding="10">
             <StackLayout>
+                <!--
                 <StackLayout 
                     Orientation="Vertical" 
                     VerticalOptions="StartAndExpand" 
@@ -24,7 +25,28 @@
                     <RadioButton Content="100x100"                       
                         Value="100x100"/>
                 </StackLayout>
+                -->
+                <StackLayout Orientation="Vertical" VerticalOptions="StartAndExpand">
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Largura" HorizontalOptions="StartAndExpand"></Label>
+                        <Label Text="{Binding Largura}" HorizontalOptions="EndAndExpand"></Label>
+                    </StackLayout>
 
+                    <StackLayout Orientation="Horizontal">
+                        <Slider HorizontalOptions="FillAndExpand"                                                        
+                            Value="{Binding Largura}" Maximum="{Binding LarguraMaxima}"></Slider>
+                    </StackLayout>
+
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Altura" HorizontalOptions="StartAndExpand"></Label>
+                        <Label Text="{Binding Altura}" HorizontalOptions="EndAndExpand"></Label>
+                    </StackLayout>
+
+                    <StackLayout Orientation="Horizontal">
+                        <Slider HorizontalOptions="FillAndExpand"
+                            Value="{Binding Altura}" Maximum="{Binding AlturaMaxima}"></Slider>
+                    </StackLayout>
+                </StackLayout>
                 <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand">
                     <ImageButton 
                 HorizontalOptions="StartAndExpand" 
@@ -37,8 +59,7 @@
                 BackgroundColor="Transparent" 
                 Command="{Binding LimparDiretorioCommand}"></ImageButton>
                 </StackLayout>
-                
-                
+                                
                 <ActivityIndicator Color="Black" 
                            VerticalOptions="Center" 
                            HorizontalOptions="Center" 
