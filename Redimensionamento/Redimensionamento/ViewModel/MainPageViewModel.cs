@@ -108,8 +108,8 @@ namespace Redimensionamento.ViewModel
             LimparDiretorioCommand = new Command(async () => await LimparDiretorio());
             IsLoading = false;
             GroupName = "Grupo";
-            LarguraMaxima = 500;
-            AlturaMaxima = 1000;
+            LarguraMaxima = 1000;
+            AlturaMaxima = 3000;
             Largura = 200;
             Altura = 500;
         }
